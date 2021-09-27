@@ -1,7 +1,7 @@
 # Monetizze Test
 
 ## Teste prático processo seletivo Monetizze
-### Instalação
+### Execução
 
 Clone o repositório:
 
@@ -17,5 +17,19 @@ Agora basta executar o arquivo **index.php** ou se preferir execute
 
 e em seguida abra o arquivo criado **index.html**
 
+
+### Exemplo de uso
+```php
+<?php
+
+use App\Services\Lottery;
+
+$game = new Lottery(6, 8);
+$game->play();
+$game->exportResult();
+```
+
+
 Author: Marcony Caldeira
+
 Contato: marconycaldeira@gmail.com
