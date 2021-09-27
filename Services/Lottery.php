@@ -9,60 +9,131 @@ use App\Services\Exceptions\DozenNotAllowedException;
 class Lottery {
 
     const MIN_RAND_DOZEN = 1;
-
     const MAX_RAND_DOZEN = 60;
-
     const DOZEN_RESULTS_QUANTITY = 6;
-
     const AVAILABLE_DOZENS_OPTIONS = [6,7,8,9,10];
 
+    /**
+     *
+     * @var int
+     */
     private $dozens;
-
+    /**
+     *
+     * @var array
+     */
     private $results = [];
-    
+    /**
+     *
+     * @var array
+     */    
     private $resultPerGame = [];
-
+    /**
+     *
+     * @var int
+     */
     private $gamesQuantity;
-
+    /**
+     *
+     * @var array
+     */
     private $games = [];
 
+    /**
+     * __construct
+     *
+     * @param integer $dozens
+     * @param integer $gamesQuantity
+     */
     public function __construct(int $dozens, int $gamesQuantity)
     {
         $this->setDozens($dozens);
         $this->setGamesQuantity($gamesQuantity);
     }
-
-    public function setResult(array $results){
+    /**
+     * setResult
+     *
+     * @param array $results
+     * @return void
+     */
+    public function setResult(array $results):void
+    {
         $this->results = $results;
     }
-
-    public function getResult(bool $join = false){
+    /**
+     * getResult
+     *
+     * @param boolean $join
+     * @return string|array
+     */
+    public function getResult(bool $join = false)
+    {
         if($join){
             return join(', ', $this->results);
         }
+
+        return $this->results;
     }
 
-    public function setDozens(int $dozens){
+    /**
+     * setDozens
+     *
+     * @param integer $dozens
+     * @return void
+     */
+    public function setDozens(int $dozens):void
+    {
         $this->dozens = $dozens;
     }
     
-    public function getDozens(){
+    /**
+     * getDozens
+     *
+     * @return integer
+     */
+    public function getDozens(): int
+    {
         return $this->dozens;
     }
 
-    public function setGamesQuantity(int $gamesQuantity){
+    /**
+     * setGamesQuantity
+     *
+     * @param integer $gamesQuantity
+     * @return void
+     */
+    public function setGamesQuantity(int $gamesQuantity): void
+    {
         $this->gamesQuantity = $gamesQuantity;
     }
-    
-    public function getGamesQuantity(){
+    /**
+     * getGamesQuantity
+     *
+     * @return integer
+     */
+    public function getGamesQuantity():int
+    {
         return $this->gamesQuantity;
     }
-
-    public function addGame(array $game){
+    /**
+     * addGame
+     *
+     * @param array $game
+     * @return void
+     */
+    public function addGame(array $game):void
+    {
         $this->games[] = $game;
     }
 
-    public function getGames(bool $stringfy = false){
+    /**
+     * getGames
+     *
+     * @param boolean $stringfy
+     * @return array|string
+     */
+    public function getGames(bool $stringfy = false)
+    {
         if($stringfy){
             return array_map(function($value){
                 return join(', ', $value);
@@ -71,12 +142,25 @@ class Lottery {
 
         return $this->games;
     }
-
-    public function addResult(array $result){
+    /**
+     * addResult
+     *
+     * @param array $result
+     * @return void
+     */
+    public function addResult(array $result): void
+    {
         $this->results[] = $result;
     }
-
-    private function generateRandomDozens(int $quantity, bool $sort = true){
+    /**
+     * generateRandomDozens
+     *
+     * @param integer $quantity
+     * @param boolean $sort
+     * @return array
+     */
+    private function generateRandomDozens(int $quantity, bool $sort = true): array
+    {
         
         $randomDozens = [];
 
@@ -97,8 +181,14 @@ class Lottery {
 
         return $randomDozens;
     }
-
-    public function generateDozens(int $quantity){
+    /**
+     * generateDozens
+     *
+     * @param integer $quantity
+     * @return array
+     */
+    public function generateDozens(int $quantity): array
+    {
         $randomDozens = [];
 
         if(!empty($quantity)){
@@ -109,34 +199,57 @@ class Lottery {
 
         return $randomDozens;
     }
-
-    public function generateGames(){
+    /**
+     * generateGames
+     *
+     * @return void
+     */
+    public function generateGames():void
+    {
         $quantity = $this->getGamesQuantity();
         for($i = 0; $i < $quantity; $i++){
             $game = $this->generateDozens($quantity);
             $this->addGame($game);
         }
     }
-
-    public function generateResults(){
+    /**
+     * generateResults
+     *
+     * @return void
+     */
+    public function generateResults():void
+    {
         $quantity = self::DOZEN_RESULTS_QUANTITY;
         $results = $this->generateDozens($quantity);
         $this->setResult($results);
     }
-
-    protected function defineResultsPerGame(){
+    /**
+     * defineResultsPerGame
+     *
+     * @return void
+     */
+    protected function defineResultsPerGame():void
+    {
         foreach($this->games as $index => $game){
             $intersects = array_intersect($game, $this->results);
             $this->resultPerGame[$index] = count($intersects);
         }
     }
-
+    /**
+     * play
+     *
+     * @return void
+     */
     public function play(){
         $this->generateGames();
         $this->generateResults();
         $this->defineResultsPerGame();
     }
-
+    /**
+     * exportResult
+     *
+     * @return void
+     */
     public function exportResult(){
         $html  = '<!DOCTYPE html>';
         $html .= '<html lang="en">';
